@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🍚 ตั้งเวลาหุงข้าว</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 24px;
+    }
+    h1 { font-size: 26px; }
+    .time {
+      font-size: 42px;
+      margin: 16px 0;
+    }
+    input, button {
+      font-size: 18px;
+      padding: 10px;
+      margin: 6px;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      background: #ffcc00;
+      color: #000;
+      font-weight: bold;
+    }
+    .countdown {
+      font-size: 36px;
+      margin-top: 20px;
+      color: #00ffcc;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🍚 ตั้งเวลาหุงข้าว</h1>
+
+<div class="time" id="now">--:--</div>
+
+<div>
+  เสร็จเวลา:
+  <input type="time" id="targetTime">
+</div>
+
+<div>
+  <button onclick="setQuick('05:30')">05:30</button>
+  <button onclick="setQuick('06:00')">06:00</button>
+</div>
+
+<div>
+  <button onclick="calculate()">เริ่มนับถอยหลัง</button>
+</div>
+
+<div class="countdown" id="result"></div>
+
+<script>
+  function updateNow() {
+    const now = new Date();
+    document.getElementById("now").textContent =
+      now.toLocaleTimeString("th-TH", { hour: '2-digit', minute: '2-digit' });
+  }
+  setInterval(updateNow, 1000);
+  updateNow();
+
+  function setQuick(time) {
+    document.getElementById("targetTime").value = time;
+  }
+
+  function calculate() {
+    const input = document.getElementById("targetTime").value;
+    if (!input) return;
+
+    const now = new Date();
+    const [h, m] = input.split(":");
+    let target = new Date();
+    target.setHours(h, m, 0, 0);
+
+    if (target <= now) {
+      target.setDate(target.getDate() + 1);
+    }
+
+    const diff = target - now;
+    const hrs = Math.floor(diff / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+
+    document.getElementById("result").textContent =
+      `เหลือเวลา ${hrs} ชม. ${mins} นาที`;
+  }
+</script>
+
+</body>
+</html>
