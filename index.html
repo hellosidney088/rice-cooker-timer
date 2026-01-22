@@ -2,53 +2,17 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ตั้งเวลาหุงข้าว</title>
 
-  <!-- PWA -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="theme-color" content="#ffffff">
-
   <style>
-    <style>
-  body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #f6f7f8;
-    margin: 0;
-    padding: 16px;
-    font-size: 20px; /* ขนาดตัวอักษรพื้นฐาน */
-  }
-
-  h1 {
-    font-size: 32px; /* หัวข้อใหญ่ */
-  }
-
-  .current-time {
-    font-size: 48px; /* เวลาปัจจุบัน */
-    font-weight: bold;
-  }
-
-  .target-time {
-    font-size: 26px;
-  }
-
-  button {
-    font-size: 22px; /* ปุ่มกด */
-    padding: 14px 18px;
-  }
-
-  .remaining-time {
-    font-size: 30px; /* เหลือเวลา */
-    font-weight: bold;
-  }
-</style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #ffffff;
       color: #111;
       margin: 0;
       padding: 24px;
+      font-size: 22px;
     }
 
     .container {
@@ -58,71 +22,72 @@
 
     h1 {
       text-align: center;
-      font-size: 22px;
+      font-size: 32px;
       margin-bottom: 24px;
     }
 
     .card {
       border: 1px solid #eee;
       border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
     }
 
     .label {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 6px;
+      font-size: 20px;
+      color: #555;
+      margin-bottom: 8px;
     }
 
     .time-now {
-      font-size: 32px;
-      font-weight: 600;
+      font-size: 48px;
+      font-weight: 700;
       text-align: center;
     }
 
     input[type="time"] {
       width: 100%;
-      font-size: 18px;
-      padding: 12px;
+      font-size: 24px;
+      padding: 14px;
       border-radius: 12px;
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
     }
 
     .quick-buttons {
       display: flex;
-      gap: 8px;
+      gap: 12px;
       margin-top: 12px;
     }
 
     .quick-buttons button {
       flex: 1;
-      padding: 12px;
-      font-size: 16px;
+      font-size: 22px;
+      padding: 14px;
       border-radius: 12px;
       border: 1px solid #ddd;
-      background: #f7f7f7;
+      background: #f3f3f3;
     }
 
     .primary {
-      margin-top: 16px;
       width: 100%;
-      padding: 14px;
-      font-size: 18px;
-      border-radius: 14px;
+      margin-top: 20px;
+      font-size: 26px;
+      padding: 18px;
+      border-radius: 16px;
       border: none;
       background: #22c55e;
       color: white;
     }
 
     .result {
+      margin-top: 28px;
+      font-size: 32px;
+      font-weight: 700;
       text-align: center;
-      font-size: 22px;
-      font-weight: 600;
-      margin-top: 24px;
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>🍚 ตั้งเวลาหุงข้าว</h1>
@@ -134,12 +99,12 @@
 
     <div class="card">
       <div class="label">เวลาที่ต้องการให้หุงเสร็จ</div>
-      <input type="time" id="targetTime">
+      <input type="time" id="finishTime" value="05:30" />
 
       <div class="quick-buttons">
-        <button onclick="setQuick('05:30')">05:30</button>
-        <button onclick="setQuick('05:45')">05:45</button>
-        <button onclick="setQuick('06:00')">06:00</button>
+        <button onclick="setTime('05:30')">05:30</button>
+        <button onclick="setTime('05:45')">05:45</button>
+        <button onclick="setTime('06:00')">06:00</button>
       </div>
 
       <button class="primary" onclick="calculate()">เริ่มนับถอยหลัง</button>
@@ -150,36 +115,31 @@
 
   <script>
     function updateNow() {
-      const now = new Date(
-        new Date().toLocaleString("en-US", { timeZone: "Asia/Bangkok" })
-      );
-      const h = String(now.getHours()).padStart(2, "0");
-      const m = String(now.getMinutes()).padStart(2, "0");
-      document.getElementById("now").textContent = `${h}:${m}`;
+      const now = new Date().toLocaleTimeString("th-TH", {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "Asia/Bangkok"
+      });
+      document.getElementById("now").textContent = now;
     }
 
     setInterval(updateNow, 1000);
     updateNow();
 
-    function setQuick(time) {
-      document.getElementById("targetTime").value = time;
+    function setTime(time) {
+      document.getElementById("finishTime").value = time;
     }
 
     function calculate() {
-      const input = document.getElementById("targetTime").value;
+      const now = new Date();
+      const input = document.getElementById("finishTime").value;
       if (!input) return;
-
-      const now = new Date(
-        new Date().toLocaleString("en-US", { timeZone: "Asia/Bangkok" })
-      );
 
       const [h, m] = input.split(":").map(Number);
       const target = new Date(now);
-      target.setHours(h, m, 0, 0);
+      target.setHours(h, m, 0);
 
-      if (target <= now) {
-        target.setDate(target.getDate() + 1);
-      }
+      if (target <= now) target.setDate(target.getDate() + 1);
 
       const diff = target - now;
       const hrs = Math.floor(diff / 3600000);
